@@ -110,7 +110,7 @@ const StudentDashboardController = {
       return res.json({ success: true, bookmarked: true });
     }
     req.flash('success', 'Resource bookmarked!');
-    res.redirect('back');
+    res.redirect(req.get('Referrer') || '/student/bookmarks');
   },
 
   // POST /student/bookmarks/remove
@@ -122,7 +122,7 @@ const StudentDashboardController = {
       return res.json({ success: true, bookmarked: false });
     }
     req.flash('success', 'Bookmark removed.');
-    res.redirect('back');
+    res.redirect(req.get('Referrer') || '/student/bookmarks');
   }
 };
 

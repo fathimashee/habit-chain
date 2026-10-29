@@ -23,13 +23,13 @@ function errorHandler(err, req, res, next) {
       return res.status(403).json({ error: 'Form session expired or invalid CSRF token. Please refresh and try again.' });
     }
     req.flash?.('error', 'Form session expired. Please try submitting again.');
-    return res.redirect('back');
+    return res.redirect(req.get('Referrer') || '/');
   }
 
   // Multer limit error
   if (err.code === 'LIMIT_FILE_SIZE') {
     req.flash?.('error', `Uploaded file exceeds maximum limit of ${process.env.MAX_FILE_SIZE_MB || 25}MB.`);
-    return res.redirect('back');
+    return res.redirect(req.get('Referrer') || '/');
   }
 
   if (req.xhr || req.headers.accept?.indexOf('json') > -1) {

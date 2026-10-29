@@ -11,6 +11,9 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
 
+// Trust reverse proxy (required for HTTPS cookie sessions on Render, Railway, Heroku)
+app.set('trust proxy', 1);
+
 // Security headers with Helmet
 app.use(
   helmet({
