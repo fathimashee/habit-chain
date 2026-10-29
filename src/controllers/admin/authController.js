@@ -17,13 +17,19 @@ const AuthController = {
         return res.redirect('/admin/login');
       }
 
-      // Store in session
-      req.session.admin = admin;
-      req.flash('success', `Welcome back, ${admin.name}!`);
+      // Store in session with regeneration
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error('Session error:', err);
+          return res.redirect('/admin/login');
+        }
+        req.session.admin = admin;
+        req.flash('success', `Welcome back, ${admin.name}!`);
 
-      const returnTo = req.session.returnTo || '/admin/dashboard';
-      delete req.session.returnTo;
-      res.redirect(returnTo);
+        const returnTo = req.session.returnTo || '/admin/dashboard';
+        delete req.session.returnTo;
+        res.redirect(returnTo);
+      });
     } catch (error) {
       console.error('Login error:', error);
       req.flash('error', 'An error occurred during authentication.');

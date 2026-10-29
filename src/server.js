@@ -1,5 +1,7 @@
 const app = require('./app');
 const { runMigrations } = require('../db/migrate');
+const { seedDatabase } = require('../db/seeds/seed');
+const { AdminModel } = require('./models/adminModel');
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -7,8 +9,11 @@ const PORT = process.env.PORT || 3000;
 // Auto-run migrations on startup if necessary
 try {
   runMigrations();
+  // Ensure default admin user and essential data are present on startup
+  AdminModel.ensureDefaultAdmin();
+  seedDatabase();
 } catch (e) {
-  console.error('Migration check notice:', e.message);
+  console.error('Initialization notice:', e.message);
 }
 
 app.listen(PORT, () => {

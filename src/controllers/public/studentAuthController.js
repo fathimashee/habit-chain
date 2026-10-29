@@ -1,5 +1,6 @@
 const { validationResult } = require('express-validator');
 const { StudentAuthService } = require('../../services/studentAuthService');
+const { AuthService } = require('../../services/authService');
 const { EmailService } = require('../../services/emailService');
 const { PasswordResetModel } = require('../../models/passwordResetModel');
 const { StudentModel } = require('../../models/studentModel');
@@ -105,6 +106,22 @@ const StudentAuthController = {
       });
     }
 
+    // 1. Check if user is an Admin
+    try {
+      const admin = await AuthService.authenticate(email, password);
+      if (admin) {
+        return req.session.regenerate((err) => {
+          if (err) return res.redirect('/login');
+          req.session.admin = admin;
+          req.flash('success', `Welcome back, ${admin.name}!`);
+          return res.redirect('/admin/dashboard');
+        });
+      }
+    } catch (e) {
+      // Not admin or auth error, proceed to student check
+    }
+
+    // 2. Check if user is a Student
     const result = await StudentAuthService.login(email, password);
     if (!result.success) {
       return res.render('public/auth/login', {

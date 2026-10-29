@@ -8,22 +8,24 @@ function seedDatabase() {
   const db = getDb();
   console.log('Seeding initial data...');
 
-  // 1. Seed Admin User
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
+  // 1. Seed / Synchronize Admin User
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@example.com').toLowerCase().trim();
   const adminPassword = process.env.ADMIN_PASSWORD || 'AdminPassword123!';
   const adminName = process.env.ADMIN_NAME || 'System Administrator';
 
-  const existingAdmin = db.prepare('SELECT admin_id FROM admins WHERE email = ?').get(adminEmail);
+  const existingAdmin = db.prepare('SELECT admin_id, password_hash FROM admins WHERE email = ?').get(adminEmail);
+  const saltRounds = 10;
+  const passwordHash = bcrypt.hashSync(adminPassword, saltRounds);
+
   if (!existingAdmin) {
-    const saltRounds = 10;
-    const passwordHash = bcrypt.hashSync(adminPassword, saltRounds);
     db.prepare(`
       INSERT INTO admins (name, email, password_hash, role)
       VALUES (?, ?, ?, 'super_admin')
     `).run(adminName, adminEmail, passwordHash);
     console.log(`Seeded admin user: ${adminEmail}`);
   } else {
-    console.log(`Admin user ${adminEmail} already exists.`);
+    db.prepare('UPDATE admins SET password_hash = ?, name = ? WHERE admin_id = ?').run(passwordHash, adminName, existingAdmin.admin_id);
+    console.log(`Synchronized password for admin user: ${adminEmail}`);
   }
 
   // 2. Seed Resource Types
