@@ -1,0 +1,324 @@
+/* ============================================================
+   Habit Chain – Auth Pages CSS
+   (login.ejs, signup.ejs, forgot-password.ejs, reset-password.ejs)
+   ============================================================ */
+
+.auth-body {
+  background: linear-gradient(135deg, #ffffff 0%, #E6F7F6 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  font-family: var(--font-body, 'Inter', sans-serif);
+}
+
+/* ── Split-panel wrapper ── */
+.auth-root {
+  width: 100%;
+}
+
+.auth-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+/* ── Left teal panel ── */
+.auth-panel {
+  background: linear-gradient(160deg, var(--color-primary, #0F9D9A) 0%, var(--color-primary-dark, #0B7A78) 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.auth-panel .brand-logo {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 2.5rem;
+  text-decoration: none;
+  color: #fff;
+}
+
+.auth-panel .brand-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -.3px;
+}
+
+.auth-panel .brand-tagline {
+  font-size: 1.1rem;
+  font-weight: 400;
+  opacity: .9;
+  line-height: 1.55;
+  max-width: 380px;
+  margin-bottom: 2rem;
+}
+
+.auth-panel .benefit-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.auth-panel .benefit-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  margin-bottom: 1.1rem;
+  font-size: .95rem;
+  opacity: .95;
+}
+
+.auth-panel .benefit-list li i {
+  font-size: 1.1rem;
+  margin-top: .15rem;
+  flex-shrink: 0;
+  color: rgba(255,255,255,.85);
+}
+
+/* ── Right white form side ── */
+.auth-form-side {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 2rem 2rem;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.auth-card .auth-logo-mobile {
+  display: none;
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.auth-card h1 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text, #12303A);
+  margin-bottom: .35rem;
+}
+
+.auth-card .auth-subtitle {
+  color: var(--color-text-muted, #5B7580);
+  font-size: .95rem;
+  margin-bottom: 2rem;
+}
+
+/* ── Form fields ── */
+.auth-card .form-label {
+  font-weight: 500;
+  color: var(--color-text, #12303A);
+  margin-bottom: .4rem;
+  font-size: .9rem;
+}
+
+.auth-card .form-control {
+  border: 1.5px solid var(--color-border, #D9ECEB);
+  border-radius: 8px;
+  padding: .65rem .9rem;
+  font-size: .95rem;
+  transition: border-color 180ms, box-shadow 180ms;
+}
+
+.auth-card .form-control:focus {
+  border-color: var(--color-primary, #0F9D9A);
+  box-shadow: 0 0 0 3px rgba(15,157,154,.18);
+  outline: none;
+}
+
+.auth-card .form-control.is-invalid {
+  border-color: var(--color-danger, #E11D48);
+}
+
+/* ── Password field wrapper ── */
+.pwd-wrapper {
+  position: relative;
+}
+
+.pwd-wrapper .form-control {
+  padding-right: 2.75rem;
+}
+
+.pwd-toggle {
+  position: absolute;
+  right: .75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-text-muted, #5B7580);
+  cursor: pointer;
+  padding: .25rem;
+  line-height: 1;
+  font-size: 1rem;
+}
+
+.pwd-toggle:hover { color: var(--color-primary, #0F9D9A); }
+.pwd-toggle:focus-visible {
+  outline: 2px solid var(--color-primary, #0F9D9A);
+  border-radius: 4px;
+}
+
+/* ── Password strength meter ── */
+.strength-meter {
+  height: 4px;
+  border-radius: 4px;
+  background: #e2e8f0;
+  margin-top: .5rem;
+  overflow: hidden;
+}
+
+.strength-meter-bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 250ms, background 250ms;
+  width: 0%;
+}
+
+.strength-label {
+  font-size: .78rem;
+  margin-top: .3rem;
+  color: var(--color-text-muted, #5B7580);
+}
+
+/* ── Primary button ── */
+.btn-auth {
+  background: var(--color-primary, #0F9D9A);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: .72rem 1.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  transition: background 160ms;
+}
+
+.btn-auth:hover, .btn-auth:focus {
+  background: var(--color-primary-dark, #0B7A78);
+  color: #fff;
+}
+
+.btn-auth:focus-visible {
+  outline: 3px solid var(--color-accent, #14B8A6);
+  outline-offset: 2px;
+}
+
+.btn-auth:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* ── Links ── */
+.auth-card a.auth-link {
+  color: var(--color-primary, #0F9D9A);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-card a.auth-link:hover {
+  color: var(--color-primary-dark, #0B7A78);
+  text-decoration: underline;
+}
+
+/* ── Error / info alert ── */
+.auth-alert {
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  font-size: .9rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+}
+
+.auth-alert-error {
+  background: var(--color-danger-bg, #FFF1F2);
+  border: 1px solid var(--color-danger-border, #FECDD3);
+  color: #be123c;
+}
+
+.auth-alert-success {
+  background: var(--color-success-bg, #ECFDF5);
+  border: 1px solid var(--color-success-border, #A7F3D0);
+  color: #065f46;
+}
+
+/* ── Divider ── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  color: var(--color-text-muted, #5B7580);
+  font-size: .8rem;
+  margin: 1.2rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border, #D9ECEB);
+}
+
+/* ── Guest link ── */
+.auth-guest {
+  display: block;
+  text-align: center;
+  color: var(--color-text-muted, #5B7580);
+  font-size: .85rem;
+  margin-top: .5rem;
+}
+
+.auth-guest a {
+  color: var(--color-text-muted, #5B7580);
+  text-decoration: underline;
+}
+
+/* ── Honeypot field (hidden) ── */
+.hp-field { display: none !important; }
+
+/* ── Fade-in animation (respects prefers-reduced-motion) ── */
+@media (prefers-reduced-motion: no-preference) {
+  .auth-card { animation: authFadeIn 350ms ease both; }
+  @keyframes authFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ── Mobile: hide left panel, show inline logo ── */
+@media (max-width: 767.98px) {
+  .auth-split {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    max-height: none;
+  }
+  .auth-panel { display: none; }
+  .auth-form-side {
+    min-height: 100vh;
+    padding: 2rem 1.25rem;
+  }
+  .auth-card .auth-logo-mobile { display: block; }
+}
+

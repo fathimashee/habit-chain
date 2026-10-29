@@ -1,0 +1,43 @@
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door"></i> Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">All Semesters</li>
+  </ol>
+</nav>
+
+<div class="mb-4">
+  <h2 class="fw-bold">Academic Semesters</h2>
+  <p class="text-secondary lead">Select your semester to access subjects, modules, and learning notes.</p>
+</div>
+
+<div class="row g-4">
+  <% if (semesters && semesters.length > 0) { %>
+    <% semesters.forEach(function(s) { %>
+      <div class="col-md-6 col-lg-4">
+        <div class="card h-100 border-0 shadow-sm card-hover">
+          <div class="card-body p-4 d-flex flex-column">
+            <div class="d-flex align-items-center mb-3">
+              <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3 me-3">
+                <i class="bi bi-mortarboard fs-3"></i>
+              </div>
+              <div>
+                <h4 class="card-title fw-bold mb-0"><%= s.name %></h4>
+                <span class="badge bg-light text-secondary border">Curriculum Units</span>
+              </div>
+            </div>
+            <p class="text-muted small flex-grow-1">Access lecture notes, question banks, and syllabus modules for this term.</p>
+            <a href="/semesters/<%= s.semester_id %>" class="btn btn-outline-primary w-100 fw-semibold stretched-link">
+              Explore Subjects <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <div class="col-12 text-center text-muted py-5">
+      <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+      <p>No semesters found in the system.</p>
+    </div>
+  <% } %>
+</div>
+

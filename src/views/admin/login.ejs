@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Sign In - Habit Chain</title>
+  
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/custom.css">
+
+  <style>
+    body {
+      background: radial-gradient(circle at 10% 20%, rgba(230, 247, 246, 0.7) 0%, rgba(255, 255, 255, 1) 90%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .login-wrapper {
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px -15px rgba(18, 48, 58, 0.08);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow var(--transition-fast);
+    }
+
+    .login-card:hover {
+      box-shadow: 0 25px 50px -12px rgba(15, 157, 154, 0.15);
+    }
+
+    .login-top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-accent) 100%);
+    }
+
+    .brand-glow-badge {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--color-primary-light);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 8px rgba(230, 247, 246, 0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .brand-glow-badge:hover {
+      transform: scale(1.08) rotate(10deg);
+    }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+      color: var(--color-primary-dark);
+      font-weight: 600;
+    }
+
+    .interactive-demo-pill {
+      cursor: pointer;
+      background-color: var(--color-primary-light);
+      border: 1px dashed var(--color-primary);
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      transition: all var(--transition-fast);
+    }
+
+    .interactive-demo-pill:hover {
+      background-color: #d2f2f0;
+      transform: translateY(-1px);
+    }
+
+    .toggle-password-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      z-index: 10;
+      padding: 4px 8px;
+    }
+    .toggle-password-btn:hover {
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <!-- Header Brand Info -->
+    <div class="text-center mb-4">
+      <div class="brand-glow-badge mb-3">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0F9D9A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+      </div>
+      <h2 class="fw-bold mb-1">Habit Chain</h2>
+      <p class="text-secondary small mb-0">Sign in to manage academic resources & syllabus structure</p>
+    </div>
+
+    <!-- Alert Messages -->
+    <% if (typeof messages !== 'undefined' && messages.error && messages.error.length > 0) { %>
+      <% messages.error.forEach(function(msg) { %>
+        <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i> <%= msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% }); %>
+    <% } %>
+
+    <% if (typeof messages !== 'undefined' && messages.success && messages.success.length > 0) { %>
+      <% messages.success.forEach(function(msg) { %>
+        <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i> <%= msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% }); %>
+    <% } %>
+
+    <!-- Card Form -->
+    <div class="login-card">
+      <div class="login-top-bar"></div>
+      <div class="p-4 p-sm-5">
+        
+        <!-- Interactive 1-Click Demo Fill -->
+        <div class="interactive-demo-pill mb-4" onclick="prefillDemoCredentials()" title="Click to fill credentials">
+          <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-magic fs-5 me-2" style="color: var(--color-primary);"></i>
+              <div>
+                <div class="fw-bold text-dark small">One-Click Admin Demo</div>
+                <div class="text-muted" style="font-size: 0.75rem;">admin@example.com • AdminPassword123!</div>
+              </div>
+            </div>
+            <span class="badge badge-soft-primary small">Auto-Fill</span>
+          </div>
+        </div>
+
+        <form action="/admin/login" method="POST" id="loginForm">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <!-- Email Floating -->
+          <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="email" name="email" required autocomplete="username" placeholder="name@example.com" autofocus>
+            <label for="email"><i class="bi bi-envelope me-1"></i> Admin Email</label>
+          </div>
+
+          <!-- Password Floating with Toggle -->
+          <div class="form-floating mb-4 position-relative">
+            <input type="password" class="form-control pe-5" id="password" name="password" required autocomplete="current-password" placeholder="Password">
+            <label for="password"><i class="bi bi-key me-1"></i> Password</label>
+            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility()" aria-label="Toggle password view">
+              <i class="bi bi-eye" id="togglePasswordIcon"></i>
+            </button>
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 py-3 fw-semibold shadow-sm d-flex align-items-center justify-content-center gap-2">
+            <span>Sign In to Dashboard</span>
+            <i class="bi bi-arrow-right"></i>
+          </button>
+        </form>
+
+        <div class="d-flex justify-content-between align-items-center mt-4 pt-3 border-top small" style="border-color: var(--color-border) !important;">
+          <span class="text-muted"><i class="bi bi-shield-check text-success me-1"></i> Rate-limited & secure</span>
+          <a href="/" class="text-decoration-none fw-semibold">
+            Student Portal <i class="bi bi-box-arrow-up-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Footer Note -->
+    <div class="text-center mt-4">
+      <a href="/" class="text-secondary text-decoration-none small">
+        <i class="bi bi-arrow-left me-1"></i> Back to Habit Chain Home
+      </a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const icon = document.getElementById('togglePasswordIcon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
+    }
+
+    function prefillDemoCredentials() {
+      const email = document.getElementById('email');
+      const password = document.getElementById('password');
+      email.value = 'admin@example.com';
+      password.value = 'AdminPassword123!';
+      email.focus();
+    }
+  </script>
+</body>
+</html>

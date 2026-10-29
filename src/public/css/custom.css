@@ -1,0 +1,445 @@
+/* ==========================================================================
+   Habit Chain - White & Teal Design System
+   "Your chain of consistent learning, all in one place."
+   ========================================================================== */
+
+/* 1. CSS Custom Properties / Design Tokens */
+:root {
+  /* Color Palette */
+  --color-primary: #0F9D9A;        /* Teal */
+  --color-primary-dark: #0B7A78;   /* Hover, active */
+  --color-primary-light: #E6F7F6;  /* Tinted backgrounds, badges */
+  --color-accent: #14B8A6;         /* Highlights, links */
+  --color-bg: #FFFFFF;
+  --color-surface: #F7FBFB;        /* Cards, sections */
+  --color-border: #D9ECEB;
+  --color-text: #12303A;           /* Headings and body */
+  --color-text-muted: #5B7580;
+
+  /* Soft Harmonized Feedback Colors */
+  --color-success: #10B981;
+  --color-success-bg: #ECFDF5;
+  --color-success-border: #A7F3D0;
+  --color-warning: #D97706;
+  --color-warning-bg: #FFFBEB;
+  --color-warning-border: #FDE68A;
+  --color-danger: #E11D48;
+  --color-danger-bg: #FFF1F2;
+  --color-danger-border: #FECDD3;
+
+  /* Typography Stacks */
+  --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Shadows & Radii */
+  --radius-card: 12px;
+  --radius-btn: 8px;
+  --shadow-subtle: 0 2px 6px -1px rgba(18, 48, 58, 0.05), 0 1px 4px -1px rgba(18, 48, 58, 0.03);
+  --shadow-hover: 0 10px 20px -3px rgba(15, 157, 154, 0.12), 0 4px 6px -2px rgba(18, 48, 58, 0.04);
+
+  /* Transitions */
+  --transition-fast: 180ms ease-in-out;
+}
+
+/* 2. Global Document Reset & Typography */
+html, body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--font-heading);
+  color: var(--color-text);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+h1, .h1 { font-size: 2.25rem; font-weight: 700; }
+h2, .h2 { font-size: 1.75rem; font-weight: 700; }
+h3, .h3 { font-size: 1.375rem; font-weight: 600; }
+h4, .h4 { font-size: 1.125rem; font-weight: 600; }
+
+p, .lead {
+  color: var(--color-text);
+}
+
+.text-muted, .text-secondary {
+  color: var(--color-text-muted) !important;
+}
+
+/* Accessible focus ring across all interactables */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible,
+.form-control:focus, .form-select:focus {
+  outline: 2px solid var(--color-primary) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 3px rgba(15, 157, 154, 0.18) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.skip-to-content {
+  position: absolute;
+  top: -60px;
+  left: 1rem;
+  background: var(--color-primary-dark);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-btn);
+  z-index: 9999;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--transition-fast);
+}
+.skip-to-content:focus {
+  top: 1rem;
+}
+
+/* 3. Navbar Styles */
+.navbar-custom {
+  background-color: var(--color-bg) !important;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 1px 3px 0 rgba(18, 48, 58, 0.04);
+}
+
+.navbar-brand {
+  font-family: var(--font-heading);
+  color: var(--color-text) !important;
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.brand-chain-icon {
+  stroke: var(--color-primary);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.navbar-brand:hover .brand-chain-icon {
+  transform: rotate(15deg);
+}
+
+.navbar-nav .nav-link {
+  font-family: var(--font-body);
+  color: var(--color-text-muted);
+  font-weight: 500;
+  padding: 0.75rem 1rem !important;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--color-primary);
+}
+
+.navbar-nav .nav-link.active {
+  color: var(--color-primary) !important;
+  font-weight: 600;
+}
+
+/* Teal underline for active navbar link */
+.navbar-nav .nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 1rem;
+  right: 1rem;
+  height: 2.5px;
+  background-color: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* 4. Buttons (Bootstrap Overrides) */
+.btn {
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.5rem 1.15rem;
+  font-size: 0.95rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover, .btn-primary:active, .btn-primary:focus {
+  background-color: var(--color-primary-dark) !important;
+  border-color: var(--color-primary-dark) !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-primary {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:active, .btn-outline-primary:focus {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-secondary {
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+  background-color: #ffffff !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-primary) !important;
+}
+
+/* 5. Cards & Surfaces */
+.card {
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--shadow-subtle);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-accent) !important;
+}
+
+.card-header {
+  background-color: var(--color-surface) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  padding: 1rem 1.25rem;
+}
+
+/* 6. Hero Section (White-to-Teal-Tint Soft Gradient) */
+.hero-chain {
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--color-primary-light) 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 3.5rem 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-chain .tagline {
+  color: var(--color-text-muted);
+  font-size: 1.2rem;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* 7. Badges & Accents */
+.badge {
+  border-radius: 6px;
+  font-weight: 600;
+  padding: 0.35em 0.65em;
+}
+
+.badge-soft-primary, .badge.bg-primary {
+  background-color: var(--color-primary-light) !important;
+  color: var(--color-primary-dark) !important;
+  border: 1px solid rgba(15, 157, 154, 0.2);
+}
+
+.badge-soft-success {
+  background-color: var(--color-success-bg) !important;
+  color: #065F46 !important;
+  border: 1px solid var(--color-success-border);
+}
+
+.badge-soft-warning {
+  background-color: var(--color-warning-bg) !important;
+  color: #92400E !important;
+  border: 1px solid var(--color-warning-border);
+}
+
+.badge-soft-danger {
+  background-color: var(--color-danger-bg) !important;
+  color: #9F1239 !important;
+  border: 1px solid var(--color-danger-border);
+}
+
+/* 8. Links & Breadcrumbs */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+.breadcrumb-item a {
+  color: var(--color-text-muted);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--color-primary);
+}
+
+.breadcrumb-item.active {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  color: var(--color-accent);
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+/* 9. Navigation Tabs & Pills */
+.nav-tabs {
+  border-bottom: 2px solid var(--color-border);
+}
+
+.nav-tabs .nav-link {
+  color: var(--color-text-muted);
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+  padding: 0.75rem 1.25rem;
+  transition: all var(--transition-fast);
+}
+
+.nav-tabs .nav-link:hover {
+  color: var(--color-primary);
+  border-color: transparent;
+}
+
+.nav-tabs .nav-link.active {
+  color: var(--color-primary) !important;
+  background-color: transparent !important;
+  border-bottom-color: var(--color-primary) !important;
+}
+
+.nav-pills .nav-link {
+  color: var(--color-text-muted);
+  border-radius: var(--radius-btn);
+  font-weight: 600;
+}
+
+.nav-pills .nav-link.active {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+}
+
+/* 10. Alerts (Soft Harmonic Tones) */
+.alert-success {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: #065F46;
+}
+
+.alert-danger {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: #9F1239;
+}
+
+.alert-warning {
+  background-color: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+  color: #92400E;
+}
+
+/* 11. Footer */
+.footer-custom {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 2.5rem 0 1.75rem;
+}
+
+.footer-custom a {
+  color: var(--color-text-muted);
+  font-size: 0.925rem;
+}
+
+.footer-custom a:hover {
+  color: var(--color-primary);
+}
+
+/* 12. Admin Dashboard & Sidebar */
+.admin-navbar {
+  background-color: var(--color-bg) !important;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-sidebar {
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  min-height: calc(100vh - 65px);
+}
+
+.admin-sidebar .sidebar-heading {
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.admin-sidebar .nav-link {
+  color: var(--color-text);
+  font-weight: 500;
+  border-radius: var(--radius-btn);
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.25rem;
+  display: flex;
+  align-items: center;
+  transition: all var(--transition-fast);
+}
+
+.admin-sidebar .nav-link i {
+  color: var(--color-accent);
+}
+
+.admin-sidebar .nav-link:hover {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.admin-sidebar .nav-link.active {
+  background-color: var(--color-primary);
+  color: #ffffff !important;
+}
+
+.admin-sidebar .nav-link.active i {
+  color: #ffffff !important;
+}
+
+/* 13. PDF Viewer Frame */
+.pdf-viewer-frame {
+  width: 100%;
+  height: 80vh;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+}
+
+/* 14. Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,55 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Semesters</h2>
+    <p class="text-muted mb-0">Organize your academic periods and their display sequence</p>
+  </div>
+  <a href="/admin/semesters/new" class="btn btn-primary">
+    <i class="bi bi-plus-lg me-1"></i> Add Semester
+  </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-body p-0">
+    <% if (semesters && semesters.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3" style="width: 100px;">Order</th>
+              <th>Semester Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% semesters.forEach(function(s) { %>
+              <tr>
+                <td class="ps-3">
+                  <span class="badge bg-light text-secondary border px-2 py-1"><%= s.display_order %></span>
+                </td>
+                <td class="fw-semibold"><%= s.name %></td>
+                <td>
+                  <div class="d-flex gap-2">
+                    <a href="/admin/semesters/<%= s.semester_id %>/edit" class="btn btn-sm btn-outline-secondary" title="Edit">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <form action="/admin/semesters/<%= s.semester_id %>/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete <%= s.name %>? This will fail if subjects exist under it.');">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="p-4 text-center text-muted">
+        <p class="mb-0">No semesters found. Click "Add Semester" to get started.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+

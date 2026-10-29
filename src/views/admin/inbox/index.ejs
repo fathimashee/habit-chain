@@ -1,0 +1,138 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold mb-1">Communications Inbox</h2>
+    <p class="text-muted mb-0">Review submitted student feedback and administrator contact messages</p>
+  </div>
+</div>
+
+<ul class="nav nav-pills mb-4" id="inboxTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active fw-semibold" id="feedback-tab" data-bs-toggle="pill" data-bs-target="#feedback-content" type="button" role="tab">
+      <i class="bi bi-chat-left-dots me-2"></i> Feedback
+      <% const unreadFeedback = feedbackList.filter(f => !f.is_read).length; %>
+      <% if (unreadFeedback > 0) { %>
+        <span class="badge bg-danger ms-1"><%= unreadFeedback %> unread</span>
+      <% } %>
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-semibold" id="contact-tab" data-bs-toggle="pill" data-bs-target="#contact-content" type="button" role="tab">
+      <i class="bi bi-envelope me-2"></i> Contact Inquiries
+      <% const unreadContact = contactList.filter(c => !c.is_read).length; %>
+      <% if (unreadContact > 0) { %>
+        <span class="badge bg-danger ms-1"><%= unreadContact %> unread</span>
+      <% } %>
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content" id="inboxTabContent">
+  <!-- Feedback List -->
+  <div class="tab-pane fade show active" id="feedback-content" role="tabpanel">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <% if (feedbackList && feedbackList.length > 0) { %>
+          <div class="list-group list-group-flush">
+            <% feedbackList.forEach(function(f) { %>
+              <div class="list-group-item p-4 <%= !f.is_read ? 'bg-light' : '' %>">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <h5 class="fw-bold mb-1">
+                      <%= f.name %>
+                      <% if (!f.is_read) { %>
+                        <span class="badge bg-danger ms-2">New</span>
+                      <% } %>
+                    </h5>
+                    <span class="text-muted small"><i class="bi bi-envelope me-1"></i><%= f.email %></span>
+                    <span class="badge bg-secondary-subtle text-secondary-emphasis ms-2"><%= f.category %></span>
+                    <% if (f.rating) { %>
+                      <span class="badge bg-warning-subtle text-warning-emphasis ms-1"><%= f.rating %> ★</span>
+                    <% } %>
+                  </div>
+                  <span class="text-muted small"><%= new Date(f.created_at).toLocaleString() %></span>
+                </div>
+                <p class="text-secondary mt-2 mb-3 fs-6"><%= f.message %></p>
+                <div class="d-flex gap-2">
+                  <% if (!f.is_read) { %>
+                    <form action="/admin/inbox/feedback/<%= f.feedback_id %>/read" method="POST">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-check2 me-1"></i> Mark as Read
+                      </button>
+                    </form>
+                  <% } %>
+                  <form action="/admin/inbox/feedback/<%= f.feedback_id %>/delete" method="POST" onsubmit="return confirm('Delete this feedback entry?');">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="p-5 text-center text-muted">
+            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+            <p class="mb-0">No feedback submitted yet.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Messages List -->
+  <div class="tab-pane fade" id="contact-content" role="tabpanel">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-0">
+        <% if (contactList && contactList.length > 0) { %>
+          <div class="list-group list-group-flush">
+            <% contactList.forEach(function(c) { %>
+              <div class="list-group-item p-4 <%= !c.is_read ? 'bg-light' : '' %>">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <div>
+                    <h5 class="fw-bold mb-1">
+                      <%= c.subject %>
+                      <% if (!c.is_read) { %>
+                        <span class="badge bg-danger ms-2">New</span>
+                      <% } %>
+                    </h5>
+                    <span class="text-dark fw-semibold me-2"><%= c.name %></span>
+                    <span class="text-muted small"><i class="bi bi-envelope me-1"></i><%= c.email %></span>
+                  </div>
+                  <span class="text-muted small"><%= new Date(c.created_at).toLocaleString() %></span>
+                </div>
+                <p class="text-secondary mt-2 mb-3 fs-6"><%= c.message %></p>
+                <div class="d-flex gap-2">
+                  <% if (!c.is_read) { %>
+                    <form action="/admin/inbox/contact/<%= c.message_id %>/read" method="POST">
+                      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                      <button type="submit" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-check2 me-1"></i> Mark as Read
+                      </button>
+                    </form>
+                  <% } %>
+                  <a href="mailto:<%= c.email %>?subject=Re: <%= encodeURIComponent(c.subject) %>" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-reply me-1"></i> Reply via Email
+                  </a>
+                  <form action="/admin/inbox/contact/<%= c.message_id %>/delete" method="POST" onsubmit="return confirm('Delete this message?');">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                      <i class="bi bi-trash me-1"></i> Delete
+                    </button>
+                  </form>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+        <% } else { %>
+          <div class="p-5 text-center text-muted">
+            <i class="bi bi-envelope-open fs-1 d-block mb-2"></i>
+            <p class="mb-0">No contact messages received yet.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+

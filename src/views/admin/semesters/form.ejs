@@ -1,0 +1,34 @@
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="fw-bold mb-0"><%= isEdit ? 'Edit Semester' : 'Add New Semester' %></h5>
+      </div>
+      <div class="card-body p-4">
+        <form action="<%= isEdit ? '/admin/semesters/' + semester.semester_id + '/edit' : '/admin/semesters/new' %>" method="POST">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-3">
+            <label for="name" class="form-label fw-semibold">Semester Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g. Semester 1, Semester 2" value="<%= semester.name || '' %>">
+            <div class="form-text">Display title shown on the student portal navigation.</div>
+          </div>
+
+          <div class="mb-4">
+            <label for="display_order" class="form-label fw-semibold">Display Sequence Order</label>
+            <input type="number" class="form-control" id="display_order" name="display_order" value="<%= semester.display_order || 1 %>" min="1">
+            <div class="form-text">Numerical order for sorting on the home and semester list pages.</div>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="/admin/semesters" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-check-lg me-1"></i> <%= isEdit ? 'Update Semester' : 'Save Semester' %>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

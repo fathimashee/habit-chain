@@ -1,0 +1,98 @@
+<%
+  // Build avatar initials from student name
+  const initials = student && student.name
+    ? student.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+    : '?';
+  const avatarColor = (student && student.avatar_color) ? student.avatar_color : '#0F9D9A';
+%>
+
+<div class="container py-5">
+  <!-- Welcome banner -->
+  <div class="card border-0 shadow-sm mb-4" style="background:linear-gradient(135deg,var(--color-primary-light),var(--color-surface));">
+    <div class="card-body d-flex align-items-center gap-4 p-4">
+      <div style="width:64px;height:64px;border-radius:50%;background:<%= avatarColor %>;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-heading);font-size:1.5rem;font-weight:700;flex-shrink:0;">
+        <%= initials %>
+      </div>
+      <div>
+        <h1 class="h3 fw-bold mb-0">Hello, <%= student.name %>! 👋</h1>
+        <p class="text-muted mb-0 mt-1">
+          <% if (student.semester_name) { %>
+            <i class="bi bi-mortarboard me-1"></i> <%= student.semester_name %>
+          <% } else { %>
+            <a href="/student/profile" class="auth-link text-decoration-none">Set your semester →</a>
+          <% } %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flash messages -->
+  <% if (typeof messages !== 'undefined' && messages.success && messages.success[0]) { %>
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i><%= messages.success[0] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  <% } %>
+
+  <!-- Quick Links -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <a href="/semesters" class="card h-100 text-decoration-none border-0 shadow-sm card-hover text-center p-3">
+        <i class="bi bi-journals fs-2 mb-2" style="color:var(--color-primary)"></i>
+        <div class="fw-semibold small">Browse Resources</div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="/student/bookmarks" class="card h-100 text-decoration-none border-0 shadow-sm card-hover text-center p-3">
+        <i class="bi bi-bookmark-heart fs-2 mb-2" style="color:var(--color-primary)"></i>
+        <div class="fw-semibold small">My Bookmarks</div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="/student/profile" class="card h-100 text-decoration-none border-0 shadow-sm card-hover text-center p-3">
+        <i class="bi bi-person-circle fs-2 mb-2" style="color:var(--color-primary)"></i>
+        <div class="fw-semibold small">My Profile</div>
+      </a>
+    </div>
+    <div class="col-6 col-md-3">
+      <a href="/question-papers" class="card h-100 text-decoration-none border-0 shadow-sm card-hover text-center p-3">
+        <i class="bi bi-patch-question fs-2 mb-2" style="color:var(--color-primary)"></i>
+        <div class="fw-semibold small">Question Papers</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Bookmarks -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold mb-0"><i class="bi bi-bookmark-heart me-2" style="color:var(--color-primary)"></i>Recent Bookmarks</h2>
+        <a href="/student/bookmarks" class="btn btn-outline-primary btn-sm">View all</a>
+      </div>
+      <% if (!bookmarks || bookmarks.length === 0) { %>
+        <div class="text-center text-muted py-4">
+          <i class="bi bi-bookmark fs-2 d-block mb-2"></i>
+          No bookmarks yet. <a href="/semesters" class="auth-link">Browse resources</a> and save what you need.
+        </div>
+      <% } else { %>
+        <div class="list-group list-group-flush">
+          <% bookmarks.forEach(b => { %>
+            <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
+              <div>
+                <a href="/resources/<%= b.resource_id %>/view" class="fw-semibold text-decoration-none" style="color:var(--color-text)"><%= b.title %></a>
+                <div class="small text-muted mt-1">
+                  <span class="badge me-1" style="background:var(--color-primary-light);color:var(--color-primary)"><%= b.type_name %></span>
+                  <%= b.subject_code %> • <%= b.semester_name %>
+                </div>
+              </div>
+              <a href="/resources/<%= b.resource_id %>/download" class="btn btn-sm btn-outline-primary ms-3">
+                <i class="bi bi-download"></i>
+              </a>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+

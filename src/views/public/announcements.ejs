@@ -1,0 +1,37 @@
+<div class="mb-4">
+  <h2 class="fw-bold">Official Announcements</h2>
+  <p class="text-secondary lead">Institutional circulars, examination notifications, and schedule updates.</p>
+</div>
+
+<div class="row g-4">
+  <% if (announcements && announcements.length > 0) { %>
+    <% announcements.forEach(function(a) { %>
+      <div class="col-md-6">
+        <div class="card h-100 border-0 shadow-sm border-start border-primary border-4">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-primary-subtle text-primary-emphasis fw-bold">Active Notice</span>
+              <span class="text-muted small">
+                <i class="bi bi-calendar3 me-1"></i><%= new Date(a.created_at).toLocaleDateString() %>
+              </span>
+            </div>
+            <h4 class="fw-bold text-dark mb-2"><%= a.title %></h4>
+            <p class="text-secondary mb-3"><%= a.body %></p>
+            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+              <span class="text-muted small">Posted by <%= a.creator_name %></span>
+              <% if (a.expires_at) { %>
+                <span class="text-muted small">Valid until <%= new Date(a.expires_at).toLocaleDateString() %></span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <div class="col-12 text-center text-muted py-5">
+      <i class="bi bi-bell-slash fs-1 d-block mb-2"></i>
+      <p class="lead">There are currently no active announcements.</p>
+    </div>
+  <% } %>
+</div>
+

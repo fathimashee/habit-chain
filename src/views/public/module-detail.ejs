@@ -1,0 +1,76 @@
+<nav aria-label="breadcrumb" class="mb-4">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/" class="text-decoration-none"><i class="bi bi-house-door"></i> Home</a></li>
+    <li class="breadcrumb-item"><a href="/semesters" class="text-decoration-none">Semesters</a></li>
+    <li class="breadcrumb-item"><a href="/semesters/<%= semester.semester_id %>" class="text-decoration-none"><%= semester.name %></a></li>
+    <li class="breadcrumb-item"><a href="/subjects/<%= subject.subject_id %>" class="text-decoration-none"><%= subject.code %></a></li>
+    <li class="breadcrumb-item active" aria-current="page">Module <%= moduleItem.module_number %></li>
+  </ol>
+</nav>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body p-4">
+    <div class="d-flex align-items-center mb-2">
+      <span class="badge bg-primary text-white me-2">Module <%= moduleItem.module_number %></span>
+      <span class="text-muted small">[<%= subject.code %>] <%= subject.name %></span>
+    </div>
+    <h2 class="fw-bold mb-2"><%= moduleItem.title %></h2>
+    <p class="text-muted mb-0"><%= moduleItem.description || 'Module notes and learning materials.' %></p>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+    <h5 class="fw-bold mb-0">Learning Materials & Files</h5>
+    <span class="badge bg-light text-dark border"><%= resources.length %> files available</span>
+  </div>
+  <div class="card-body p-0">
+    <% if (resources && resources.length > 0) { %>
+      <div class="list-group list-group-flush">
+        <% resources.forEach(function(r) { %>
+          <div class="list-group-item d-flex justify-content-between align-items-center p-3">
+            <div class="d-flex align-items-center">
+              <% if (r.file_format === 'pdf') { %>
+                <i class="bi bi-file-earmark-pdf fs-2 text-danger me-3"></i>
+              <% } else if (['c', 'cpp', 'java', 'py', 'sql'].includes(r.file_format)) { %>
+                <i class="bi bi-file-earmark-code fs-2 text-success me-3"></i>
+              <% } else if (['zip'].includes(r.file_format)) { %>
+                <i class="bi bi-file-earmark-zip fs-2 text-warning me-3"></i>
+              <% } else { %>
+                <i class="bi bi-file-earmark-text fs-2 text-primary me-3"></i>
+              <% } %>
+              <div>
+                <h6 class="fw-bold mb-1"><%= r.title %></h6>
+                <% if (r.description) { %>
+                  <p class="text-muted small mb-1"><%= r.description %></p>
+                <% } %>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge badge-soft-primary"><%= r.type_name %></span>
+                  <span class="badge bg-light text-secondary border font-monospace small text-uppercase">.<%= r.file_format %></span>
+                  <span class="text-muted small"><%= (r.file_size / (1024 * 1024)).toFixed(2) %> MB</span>
+                  <span class="text-muted small">• <%= r.download_count %> downloads</span>
+                </div>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <% if (r.file_format === 'pdf') { %>
+                <a href="/resources/<%= r.resource_id %>/view" class="btn btn-outline-primary btn-sm">
+                  <i class="bi bi-eye me-1"></i> Preview
+                </a>
+              <% } %>
+              <a href="/resources/<%= r.resource_id %>/download" class="btn btn-primary btn-sm">
+                <i class="bi bi-download me-1"></i> Download
+              </a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="p-5 text-center text-muted">
+        <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+        <p class="mb-0">No documents uploaded for this module yet.</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+

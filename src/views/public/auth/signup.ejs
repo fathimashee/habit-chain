@@ -1,0 +1,199 @@
+<!-- Sign Up Page – Habit Chain -->
+<div class="auth-split">
+
+  <!-- Left: Teal Benefit Panel -->
+  <aside class="auth-panel">
+    <a href="/" class="brand-logo">
+      <%- include('../../partials/logo') %>
+      <span class="brand-name">Habit Chain</span>
+    </a>
+    <p class="brand-tagline">Your chain of consistent learning, all in one place.</p>
+    <ul class="benefit-list">
+      <li><i class="bi bi-bookmark-heart-fill"></i> Save and organise notes &amp; resources</li>
+      <li><i class="bi bi-file-earmark-text-fill"></i> Access previous year question papers instantly</li>
+      <li><i class="bi bi-people-fill"></i> Contribute your notes and help others learn</li>
+    </ul>
+  </aside>
+
+  <!-- Right: Form -->
+  <div class="auth-form-side">
+    <div class="auth-card">
+
+      <!-- Mobile-only logo -->
+      <div class="auth-logo-mobile">
+        <a href="/" class="d-inline-flex align-items-center gap-2 text-decoration-none">
+          <%- include('../../partials/logo') %>
+          <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.25rem;font-weight:700;color:var(--color-text)">Habit Chain</span>
+        </a>
+      </div>
+
+      <h1>Create your account</h1>
+      <p class="auth-subtitle">Join Habit Chain and start building your study chain.</p>
+
+      <!-- Error messages -->
+      <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+        <div class="auth-alert auth-alert-error" role="alert" aria-live="assertive">
+          <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+          <div>
+            <% errors.forEach(e => { %><div><%= e.msg %></div><% }); %>
+          </div>
+        </div>
+      <% } %>
+
+      <% const flash = typeof messages !== 'undefined' && messages.error && messages.error[0]; %>
+      <% if (flash) { %>
+        <div class="auth-alert auth-alert-error" role="alert" aria-live="assertive">
+          <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+          <div><%= flash %></div>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/signup" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <!-- Honeypot -->
+        <div class="hp-field" aria-hidden="true">
+          <input type="text" name="website" tabindex="-1" autocomplete="off">
+        </div>
+
+        <!-- Full Name -->
+        <div class="mb-2">
+          <label for="name" class="form-label">Full Name</label>
+          <input type="text" id="name" name="name" class="form-control" autocomplete="name"
+            autofocus required value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>">
+        </div>
+
+        <!-- Email -->
+        <div class="mb-2">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" name="email" class="form-control" autocomplete="email"
+            required value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>">
+        </div>
+
+        <!-- Semester (optional) -->
+        <div class="mb-2">
+          <label for="semester_id" class="form-label">Current Semester <span class="text-muted fw-normal">(optional)</span></label>
+          <select id="semester_id" name="semester_id" class="form-select">
+            <option value="">— Select semester —</option>
+            <% if (typeof semesters !== 'undefined') { semesters.forEach(sem => { %>
+              <option value="<%= sem.semester_id %>"
+                <%= (typeof formData !== 'undefined' && formData.semester_id == sem.semester_id) ? 'selected' : '' %>>
+                <%= sem.name %>
+              </option>
+            <% }); } %>
+          </select>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-1">
+          <label for="password" class="form-label">Password</label>
+          <div class="pwd-wrapper">
+            <input type="password" id="password" name="password" class="form-control"
+              autocomplete="new-password" required minlength="8">
+            <button type="button" class="pwd-toggle" onclick="togglePwd('password','pwdIcon')" aria-label="Show/hide password">
+              <i class="bi bi-eye" id="pwdIcon"></i>
+            </button>
+          </div>
+          <!-- Strength meter -->
+          <div class="strength-meter mt-1"><div class="strength-meter-bar" id="strengthBar"></div></div>
+          <div class="strength-label" id="strengthLabel">Min. 8 characters with a letter and number</div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-2">
+          <label for="confirm_password" class="form-label">Confirm Password</label>
+          <div class="pwd-wrapper">
+            <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+              autocomplete="new-password" required>
+            <button type="button" class="pwd-toggle" onclick="togglePwd('confirm_password','cpwdIcon')" aria-label="Show/hide confirm password">
+              <i class="bi bi-eye" id="cpwdIcon"></i>
+            </button>
+          </div>
+          <div class="form-text" id="matchHint"></div>
+        </div>
+
+        <!-- Terms checkbox -->
+        <div class="mb-3 form-check">
+          <input type="checkbox" class="form-check-input" id="terms" name="terms" required
+            style="border-color:var(--color-primary);margin-top:3px">
+          <label class="form-check-label" for="terms" style="font-size:.88rem;line-height:1.4;cursor:pointer">
+            I agree to the
+            <a href="/terms" class="auth-link" target="_blank" rel="noopener">Terms of Use</a>
+            and
+            <a href="/privacy" class="auth-link" target="_blank" rel="noopener">Privacy Note</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-auth" id="signupBtn">
+          <span id="btnText">Create Account</span>
+          <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <div class="auth-divider">or</div>
+
+      <p class="text-center mb-1" style="font-size:.9rem">
+        Already have an account? <a href="/login" class="auth-link">Log in</a>
+      </p>
+      <a href="/" class="auth-guest">Continue as guest →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+// Show/hide password
+function togglePwd(fieldId, iconId) {
+  const f = document.getElementById(fieldId);
+  const i = document.getElementById(iconId);
+  if (f.type === 'password') {
+    f.type = 'text';
+    i.className = 'bi bi-eye-slash';
+  } else {
+    f.type = 'password';
+    i.className = 'bi bi-eye';
+  }
+}
+
+// Password strength
+const pwdInput = document.getElementById('password');
+const bar = document.getElementById('strengthBar');
+const label = document.getElementById('strengthLabel');
+
+pwdInput.addEventListener('input', () => {
+  const v = pwdInput.value;
+  let score = 0;
+  if (v.length >= 8) score++;
+  if (/[a-zA-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^a-zA-Z0-9]/.test(v)) score++;
+  if (v.length >= 12) score++;
+
+  const pct = (score / 5) * 100;
+  bar.style.width = pct + '%';
+
+  if (score <= 1) { bar.style.background = '#E11D48'; label.textContent = 'Very weak'; }
+  else if (score === 2) { bar.style.background = '#D97706'; label.textContent = 'Weak'; }
+  else if (score === 3) { bar.style.background = '#10B981'; label.textContent = 'Good'; }
+  else { bar.style.background = '#0F9D9A'; label.textContent = 'Strong'; }
+});
+
+// Match hint
+const cpwd = document.getElementById('confirm_password');
+const matchHint = document.getElementById('matchHint');
+cpwd.addEventListener('input', () => {
+  if (cpwd.value === pwdInput.value) {
+    matchHint.textContent = '✓ Passwords match';
+    matchHint.style.color = '#0F9D9A';
+  } else {
+    matchHint.textContent = 'Passwords do not match';
+    matchHint.style.color = '#E11D48';
+  }
+});
+
+// Loading state on submit
+document.querySelector('form').addEventListener('submit', () => {
+  document.getElementById('btnText').textContent = 'Creating…';
+  document.getElementById('btnSpinner').classList.remove('d-none');
+  document.getElementById('signupBtn').disabled = true;
+});
+</script>
+

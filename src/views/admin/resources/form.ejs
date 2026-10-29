@@ -1,0 +1,118 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h5 class="fw-bold mb-0"><%= isEdit ? 'Edit Resource' : 'Upload Academic Resource' %></h5>
+      </div>
+      <div class="card-body p-4">
+        <form action="<%= isEdit ? '/admin/resources/' + resourceItem.resource_id + '/edit' : '/admin/resources/new' %>" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+          <div class="mb-3">
+            <label for="title" class="form-label fw-semibold">Resource Title <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="title" name="title" required placeholder="e.g. Module 1 Handwritten Notes, 2024 University Exam Paper" value="<%= resourceItem.title || '' %>">
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="subject_id" class="form-label fw-semibold">Subject <span class="text-danger">*</span></label>
+              <select class="form-select" id="subject_id" name="subject_id" required onchange="loadModulesForSubject(this.value)">
+                <option value="">-- Choose Subject --</option>
+                <% subjects.forEach(function(s) { %>
+                  <option value="<%= s.subject_id %>" <%= resourceItem.subject_id == s.subject_id ? 'selected' : '' %>>
+                    [<%= s.code %>] <%= s.name %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="module_id" class="form-label fw-semibold">Module (Optional)</label>
+              <select class="form-select" id="module_id" name="module_id">
+                <option value="">-- General / Subject Level --</option>
+                <% if (typeof modules !== 'undefined' && modules) { %>
+                  <% modules.forEach(function(m) { %>
+                    <option value="<%= m.module_id %>" <%= resourceItem.module_id == m.module_id ? 'selected' : '' %>>
+                      Module <%= m.module_number %>: <%= m.title %>
+                    </option>
+                  <% }); %>
+                <% } %>
+              </select>
+              <div class="form-text">Leave blank for full-subject Question Papers or Lab Manuals.</div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label for="type_id" class="form-label fw-semibold">Resource Type <span class="text-danger">*</span></label>
+              <select class="form-select" id="type_id" name="type_id" required>
+                <% resourceTypes.forEach(function(t) { %>
+                  <option value="<%= t.type_id %>" <%= resourceItem.type_id == t.type_id ? 'selected' : '' %>>
+                    <%= t.name %>
+                  </option>
+                <% }); %>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="exam_year" class="form-label fw-semibold">Exam Year (For Question Papers)</label>
+              <input type="number" class="form-control" id="exam_year" name="exam_year" placeholder="e.g. 2024" min="2000" max="2030" value="<%= resourceItem.exam_year || '' %>">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label fw-semibold">Description / Topic Notes</label>
+            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Brief context, authors, or unit details..."><%= resourceItem.description || '' %></textarea>
+          </div>
+
+          <!-- File Upload Field -->
+          <div class="mb-4">
+            <label for="file" class="form-label fw-semibold">
+              <%= isEdit ? 'Replace File (Leave empty to keep existing)' : 'Select File' %> 
+              <% if (!isEdit) { %><span class="text-danger">*</span><% } %>
+            </label>
+            <input class="form-control" type="file" id="file" name="file" <%= !isEdit ? 'required' : '' %> accept=".pdf,.docx,.pptx,.zip,.c,.cpp,.java,.py,.txt,.sql">
+            <div class="form-text">
+              Allowed formats: PDF, DOCX, PPTX, ZIP, C, CPP, Java, Python, TXT, SQL. Max file size: 25MB.
+            </div>
+            <% if (isEdit && resourceItem.original_filename) { %>
+              <div class="mt-2 text-muted small">
+                Current file: <span class="badge bg-light text-dark border font-monospace"><%= resourceItem.original_filename %></span> 
+                (<%= (resourceItem.file_size / (1024 * 1024)).toFixed(2) %> MB)
+              </div>
+            <% } %>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <a href="/admin/resources" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">
+              <i class="bi bi-cloud-arrow-up me-1"></i> <%= isEdit ? 'Save Changes' : 'Upload Resource' %>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadModulesForSubject(subjectId) {
+  const moduleSelect = document.getElementById('module_id');
+  moduleSelect.innerHTML = '<option value="">-- General / Subject Level --</option>';
+  if (!subjectId) return;
+
+  try {
+    const res = await fetch('/admin/api/subjects/' + subjectId + '/modules');
+    const modules = await res.json();
+    modules.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.module_id;
+      opt.textContent = `Module ${m.module_number}: ${m.title}`;
+      moduleSelect.appendChild(opt);
+    });
+  } catch (err) {
+    console.error('Failed to load modules:', err);
+  }
+}
+</script>
+

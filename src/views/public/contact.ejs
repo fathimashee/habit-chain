@@ -1,0 +1,52 @@
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <div class="mb-4">
+        <h2 class="fw-bold mb-1">Contact Administrator</h2>
+        <p class="text-secondary small mb-0">Direct inquiries regarding syllabus uploads, copyright, or portal questions.</p>
+      </div>
+
+      <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-danger mb-4">
+          <ul class="mb-0 ps-3">
+            <% errors.forEach(function(e) { %>
+              <li><%= e.msg %></li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form action="/contact" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label for="name" class="form-label fw-semibold">Your Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" name="name" required placeholder="Full Name" value="<%= formData.name || '' %>">
+          </div>
+          <div class="col-md-6">
+            <label for="email" class="form-label fw-semibold">Email Address <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="email" name="email" required placeholder="contact@example.com" value="<%= formData.email || '' %>">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="subject" class="form-label fw-semibold">Subject <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="subject" name="subject" required placeholder="e.g. Request for BCA Semester 2 Question Bank" value="<%= formData.subject || '' %>">
+        </div>
+
+        <div class="mb-4">
+          <label for="message" class="form-label fw-semibold">Message <span class="text-danger">*</span></label>
+          <textarea class="form-control" id="message" name="message" rows="5" required placeholder="Write your inquiry to the administration..."><%= formData.message || '' %></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="text-secondary small">Habit Chain Administrator: admin@example.com</span>
+          <button type="submit" class="btn btn-primary px-4 fw-semibold">
+            <i class="bi bi-envelope-paper me-1"></i> Send Inquiry
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
