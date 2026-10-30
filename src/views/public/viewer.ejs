@@ -29,17 +29,60 @@
 
 <!-- In-browser PDF Preview Container -->
 <div class="card border-0 shadow-sm overflow-hidden">
-  <div class="card-body p-0">
-    <object data="/resources/<%= resource.resource_id %>/stream" type="application/pdf" class="pdf-viewer-frame">
-      <div class="p-5 text-center text-muted">
-        <i class="bi bi-file-earmark-pdf fs-1 d-block mb-3 text-danger"></i>
-        <h5>Unable to render PDF directly in this browser frame.</h5>
-        <p class="mb-4">You can download or view the PDF document using your browser's dedicated viewer.</p>
-        <a href="/resources/<%= resource.resource_id %>/download" class="btn btn-primary">
-          <i class="bi bi-download me-1"></i> Download File
-        </a>
-      </div>
-    </object>
+  <div class="card-body p-0" id="pdf-viewer-wrap">
+    <!-- Try native browser embed first -->
+    <iframe
+      id="pdf-frame"
+      src="/resources/<%= resource.resource_id %>/stream"
+      class="pdf-viewer-frame"
+      title="PDF Preview"
+      style="border:none;"
+    ></iframe>
+
+    <!-- Friendly fallback shown by JS if iframe fails to load -->
+    <div id="pdf-fallback" class="p-5 text-center text-muted d-none">
+      <i class="bi bi-file-earmark-pdf fs-1 d-block mb-3 text-danger"></i>
+      <h5 class="fw-semibold mb-2">Preview unavailable</h5>
+      <p class="mb-1 text-muted small">The file may not yet be available on this server, or your browser blocked the preview.</p>
+      <p class="mb-4 text-muted small">Use the <strong>Download PDF</strong> button above to save and open it locally.</p>
+      <a href="/resources/<%= resource.resource_id %>/download" class="btn btn-primary">
+        <i class="bi bi-download me-1"></i> Download &amp; Open PDF
+      </a>
+    </div>
   </div>
 </div>
+
+<script>
+  (function () {
+    const frame = document.getElementById('pdf-frame');
+    const fallback = document.getElementById('pdf-fallback');
+
+    function showFallback() {
+      frame.classList.add('d-none');
+      fallback.classList.remove('d-none');
+    }
+
+    // Detect load failure: if iframe src returns non-2xx, switch to fallback
+    frame.addEventListener('load', function () {
+      try {
+        // If the server returned a non-PDF error page, content-type check via fetch
+        fetch('/resources/<%= resource.resource_id %>/stream', { method: 'HEAD' })
+          .then(r => { if (!r.ok) showFallback(); })
+          .catch(showFallback);
+      } catch (e) { /* cross-origin – assume ok */ }
+    });
+
+    frame.addEventListener('error', showFallback);
+
+    // Safety net: if nothing loaded after 6 s, show fallback
+    setTimeout(function () {
+      if (fallback.classList.contains('d-none') && frame.contentDocument) {
+        try {
+          const body = frame.contentDocument.body;
+          if (!body || body.innerHTML.trim() === '') showFallback();
+        } catch (e) { /* cross-origin */ }
+      }
+    }, 6000);
+  })();
+</script>
 
