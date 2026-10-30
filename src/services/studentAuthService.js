@@ -32,7 +32,7 @@ const StudentAuthService = {
   },
 
   async register({ name, email, password, semester_id }) {
-    const existing = StudentModel.findByEmail(email);
+    const existing = await StudentModel.findByEmail(email);
     if (existing) {
       return { success: false, message: 'An account with this email already exists.' };
     }
@@ -41,12 +41,12 @@ const StudentAuthService = {
       return { success: false, message: strengthCheck.message };
     }
     const password_hash = await this.hashPassword(password);
-    const studentId = StudentModel.create({ name, email, password_hash, semester_id });
+    const studentId = await StudentModel.create({ name, email, password_hash, semester_id });
     return { success: true, studentId };
   },
 
   async login(email, password) {
-    const student = StudentModel.findByEmail(email);
+    const student = await StudentModel.findByEmail(email);
     if (!student) {
       return { success: false };
     }

@@ -60,7 +60,7 @@ const StudentAuthController = {
     }
 
     // Auto-login after registration
-    const student = StudentModel.findById(result.studentId);
+    const student = await StudentModel.findById(result.studentId);
     req.session.regenerate((err) => {
       if (err) return res.redirect('/login');
       req.session.student = {
@@ -183,7 +183,7 @@ const StudentAuthController = {
   // POST /forgot-password
   async postForgotPassword(req, res) {
     const { email } = req.body;
-    const student = StudentModel.findByEmail(email);
+    const student = await StudentModel.findByEmail(email);
     const appUrl = process.env.APP_URL || `http://localhost:${process.env.PORT || 3000}`;
 
     if (student) {

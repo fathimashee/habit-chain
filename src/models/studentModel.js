@@ -1,7 +1,21 @@
 const { getDb } = require('../../db/connection');
+const { Student } = require('./mongo/schemas');
 
 const StudentModel = {
-  create({ name, email, password_hash, semester_id = null, avatar_color = '#0F9D9A' }) {
+  async create({ name, email, password_hash, semester_id = null, avatar_color = '#0F9D9A' }) {
+    // 1. Sync to MongoDB Atlas
+    try {
+      await Student.create({
+        name,
+        email: email.toLowerCase().trim(),
+        password_hash,
+        avatar_color
+      });
+    } catch (e) {
+      console.warn('[StudentModel-Atlas] Notice:', e.message);
+    }
+
+    // 2. Primary local store
     const db = getDb();
     const result = db.prepare(`
       INSERT INTO students (name, email, password_hash, semester_id, avatar_color)
@@ -10,9 +24,32 @@ const StudentModel = {
     return result.lastInsertRowid;
   },
 
-  findByEmail(email) {
-    const db = getDb();
-    return db.prepare('SELECT * FROM students WHERE email = ? AND is_active = 1').get(email.toLowerCase().trim());
+  async findByEmail(email) {
+    const cleanEmail = email.toLowerCase().trim();
+    // 1. Try local SQLite
+    try {
+      const db = getDb();
+      const local = db.prepare('SELECT * FROM students WHERE email = ? AND is_active = 1').get(cleanEmail);
+      if (local) return local;
+    } catch {}
+
+    // 2. Fallback to MongoDB Atlas
+    try {
+      const doc = await Student.findOne({ email: cleanEmail, is_active: 1 }).lean();
+      if (doc) {
+        return {
+          student_id: doc._id.toString(),
+          name: doc.name,
+          email: doc.email,
+          password_hash: doc.password_hash,
+          avatar_color: doc.avatar_color,
+          is_active: doc.is_active,
+          created_at: doc.created_at
+        };
+      }
+    } catch {}
+
+    return null;
   },
 
   findById(id) {
@@ -25,24 +62,26 @@ const StudentModel = {
     `).get(id);
   },
 
-  updateLastLogin(id) {
+  async updateLastLogin(id) {
     const db = getDb();
-    return db.prepare('UPDATE students SET last_login_at = CURRENT_TIMESTAMP WHERE student_id = ?').run(id);
+    try {
+      db.prepare('UPDATE students SET last_login_at = CURRENT_TIMESTAMP WHERE student_id = ?').run(id);
+    } catch {}
   },
 
-  updateProfile(id, { name, semester_id, avatar_color }) {
+  async updateProfile(id, { name, semester_id, avatar_color }) {
     const db = getDb();
     return db.prepare(`
       UPDATE students SET name = ?, semester_id = ?, avatar_color = ? WHERE student_id = ?
     `).run(name, semester_id || null, avatar_color, id);
   },
 
-  updatePassword(id, password_hash) {
+  async updatePassword(id, password_hash) {
     const db = getDb();
     return db.prepare('UPDATE students SET password_hash = ? WHERE student_id = ?').run(password_hash, id);
   },
 
-  deactivate(id) {
+  async deactivate(id) {
     const db = getDb();
     return db.prepare('UPDATE students SET is_active = 0 WHERE student_id = ?').run(id);
   }

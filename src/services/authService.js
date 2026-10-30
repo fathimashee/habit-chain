@@ -7,7 +7,7 @@ const AuthService = {
       throw new Error('Email and password are required.');
     }
 
-    const admin = AdminModel.findByEmail(email);
+    const admin = await AdminModel.findByEmail(email);
     if (!admin) {
       return null;
     }
